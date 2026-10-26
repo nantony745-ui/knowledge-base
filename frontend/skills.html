@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>技能管理 · 工具箱 · Knowledge Base</title>
+<link rel="stylesheet" href="/static/styles.css"><link rel="stylesheet" href="/static/toolbox.css">
+<script src="/static/skills.js" defer></script></head>
+<body><main class="toolbox-page">
+<header class="toolbox-heading"><h1><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="3"/><path d="M8 7V4h8v3M3 12h18M10 12v3h4v-3"/></svg>工具箱</h1><a class="toolbox-back" href="/">返回知识库</a></header>
+<p class="toolbox-description">查看和管理智能助手可用的技能与 MCP 服务。</p>
+<nav class="toolbox-nav" aria-label="工具箱导航"><a href="/skills" aria-current="page">技能管理 <span class="toolbox-count" id="skills-count">—</span></a><a href="/mcp-services">MCP服务 <span class="toolbox-count" id="mcp-count">—</span></a></nav>
+<p id="skills-status" class="toolbox-status" role="status">正在检查登录…</p>
+<section id="skills-content" hidden aria-label="技能管理"><div class="skills-toolbar"><p class="toolbox-note">刷新目录和启停调整对新启动的智能推理生效，正在运行的任务不受影响。</p><button id="skills-refresh" class="button" type="button">刷新目录</button></div><div id="skills-list"></div></section>
+</main></body></html>

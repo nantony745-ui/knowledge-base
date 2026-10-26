@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MCP服务 · 工具箱 · Knowledge Base</title>
+<link rel="stylesheet" href="/static/styles.css">
+<link rel="stylesheet" href="/static/toolbox.css">
+<style>
+[hidden]{display:none!important}
+.mcp-card{background:#fff;border:1px solid #dce5ef;border-radius:12px;padding:20px;margin:16px 0}.mcp-actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.mcp-tool{display:block;padding:12px 0;border-top:1px solid #e6edf4}.mcp-tool small{display:block;white-space:pre-wrap;margin:4px 0;color:#526477}.mcp-page input:not([type=checkbox]),.mcp-page select{width:100%;padding:10px;border:1px solid #dce5ef;border-radius:6px}.mcp-page label{display:block;margin:8px 0}.mcp-page pre{white-space:pre-wrap;overflow-wrap:anywhere}
+</style><script src="/static/mcp-services.js" defer></script></head>
+<body><main class="toolbox-page mcp-page">
+<header class="toolbox-heading"><h1><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="3"/><path d="M8 7V4h8v3M3 12h18M10 12v3h4v-3"/></svg>工具箱</h1><a class="toolbox-back" href="/">返回知识库</a></header>
+<p class="toolbox-description">查看和管理智能助手可用的技能与 MCP 服务。</p>
+<nav class="toolbox-nav" aria-label="工具箱导航"><a href="/skills">技能管理 <span class="toolbox-count" id="skills-count">—</span></a><a href="/mcp-services" aria-current="page">MCP服务 <span class="toolbox-count" id="mcp-count">—</span></a></nav>
+<p class="toolbox-note">仅勾选已确认只读的工具。远端只读提示不代表授权。</p><p id="mcp-status" class="toolbox-status" role="status">正在检查登录…</p>
+<section id="mcp-content" hidden><form id="mcp-create" class="mcp-card"><h2>添加服务</h2>
+<label>名称<input name="name" required maxlength="128"></label><label>Streamable HTTP地址<input name="endpoint" type="url" required maxlength="2048" placeholder="http://127.0.0.1:8765/mcp"></label>
+<label><input name="requires_auth" type="checkbox"> 需要认证</label>
+<label data-token hidden>API Key / Bearer Token<input name="token" type="password" disabled maxlength="4096" autocomplete="new-password" placeholder="仅填写Key，不加Bearer前缀"></label>
+<button class="button primary" type="submit">连接并添加</button></form><div id="mcp-list"></div></section>
+</main></body></html>

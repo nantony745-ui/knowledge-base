@@ -1,0 +1,7 @@
+# 本地WSL租约容错覆盖；仅在明确启用该文件时应用。
+# 省略此覆盖文件即可恢复镜像默认值，不改动数据卷或collection。
+services:
+  milvus:
+    restart: unless-stopped
+    environment:
+      COMMON_SESSION_TTL: "180"

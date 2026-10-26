@@ -1,0 +1,29 @@
+# 本地配置与凭据
+.env
+.env.*
+!.env.example
+
+# 用户数据、模型输出与本地运行状态
+DATA/
+data/
+artifacts/
+profile_output/
+*.log
+*.pid
+*.tmp
+
+# Python 与编辑器
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+node_modules/
+
+*Zone.Identifier

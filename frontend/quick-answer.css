@@ -1,0 +1,24 @@
+.chat-options{display:flex;align-items:center;gap:8px;margin-right:auto;min-width:0}
+.chat-mode-select,.chat-scope-picker summary{font:inherit;font-size:11px;color:#586270;border:1px solid #e5e7eb;border-radius:6px;padding:5px 8px;background:#fff;line-height:18px}
+.chat-mode-select{max-width:115px;cursor:pointer}
+.chat-scope-picker{position:relative;min-width:0}
+.chat-scope-picker summary{cursor:pointer;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-scope-options{position:absolute;bottom:calc(100% + 10px);left:0;z-index:10;min-width:240px;max-width:min(320px,75vw);max-height:240px;overflow:auto;padding:10px;background:#fff;border:1px solid #dfe8f5;border-radius:10px;box-shadow:0 8px 28px #294c8021}
+.chat-scope-options label{display:flex;align-items:center;gap:8px;padding:8px;font-size:12px;line-height:1.6;cursor:pointer}
+.chat-scope-options input{flex-shrink:0;accent-color:#087cff}
+.chat-scope-options p{margin:8px;font-size:12px;color:#8794ab}
+.quick-session-bar{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px max(24px,calc((100% - 960px)/2));font-size:12px;color:#65748c}
+.quick-session-bar .error{color:#d6586e}
+.quick-text{white-space:normal;overflow-wrap:anywhere}
+.reasoning-step{border:1px solid #dce6f3;border-radius:10px;padding:12px 16px;background:#f7faff;color:#526782;font-size:13px;overflow-wrap:anywhere}
+.reasoning-step summary{cursor:pointer;font-weight:600}
+.reasoning-step ul{padding-left:20px;margin-bottom:0;line-height:1.9}
+.quick-sources{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.source-card{font-size:12px;text-align:left;line-height:1.6;padding:8px 12px;border:1px solid #cddff7;border-radius:8px;background:#f3f8ff;color:#386391}
+.source-card:hover{background:#e6f1ff}
+.source-dialog{width:min(720px,calc(100% - 32px));padding:24px}
+.source-dialog h2{font-size:18px;margin:18px 0 10px;overflow-wrap:anywhere}
+.source-dialog .source-meta{font-size:12px;color:#65748c;line-height:1.8}
+.source-dialog pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;font-size:13px;line-height:1.9;padding:18px;background:#f5f9ff;border-radius:10px}
+.source-dialog a{color:#087cff;font-size:13px}
+@media(max-width:700px){.composer-footer{flex-wrap:wrap}.chat-options{flex:1 1 100%}.chat-scope-picker summary{max-width:calc(100vw - 165px)}.quick-session-bar{padding:12px 18px}.chat-mode .quick-session-bar{padding-top:42px}.chat-mode .quick-session-bar+.chat-thread{padding-top:18px}}

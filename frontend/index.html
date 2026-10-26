@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="企业知识库、文档与语义检索。">
+  <title>Knowledge Base · 我的知识空间</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23087cff'/%3E%3Ctext x='8' y='24' fill='white' font-family='Arial' font-size='24'%3EK%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/static/styles.css?v=stop-20261006-1">
+  <link rel="stylesheet" href="/static/quick-answer.css?v=scroll-20261006-3">
+  <script src="/static/vendor/marked/marked.umd.js" defer></script>
+  <script src="/static/quick-answer.js?v=stop-20261006-1" defer></script>
+  <script src="/static/app.js?v=quick-errors-20261019-1" defer></script>
+</head>
+<body>
+  <svg class="icon-sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><rect x="5" y="3" width="15" height="18" rx="2"/><path d="M5 17h15M9 7h7M9 10h7"/></symbol>
+    <symbol id="i-note" viewBox="0 0 24 24"><path d="M13 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-8M10 14l1-4L19 2l3 3-8 8z"/></symbol>
+    <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m16 8-3 5-5 3 3-5z"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="6" height="6" rx="2"/><rect x="15" y="3" width="6" height="6" rx="2"/><rect x="3" y="15" width="6" height="6" rx="2"/><rect x="15" y="15" width="6" height="6" rx="2"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM3 8h18"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9z"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="m9 3-1 3-3 1-2 3 2 2-1 3 2 3 3-1 2 3h3l1-3 3-1 2-3-2-2 1-3-2-3-3 1-2-3z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 4v16M4 12h16"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M5 17h14l-2-3V9a5 5 0 0 0-10 0v5zM10 20h4"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V3m-5 5 5-5 5 5M3 15v5a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-5"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H5v18h14V8zM14 3v5h5M8 12h8M8 16h6"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-restore" viewBox="0 0 24 24"><path d="M3 10a9 9 0 1 1 2 8M3 4v6h6M12 7v5l3 2"/></symbol>
+    <symbol id="i-maximize" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="1"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11a9 9 0 0 1-9 9H3l2-5a9 9 0 1 1 16-4zM8 10h8M8 14h5"/></symbol>
+    <symbol id="i-panel" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16"/></symbol>
+  </svg>
+
+  <section id="login-view" class="login-view"><form id="login-form"><h1>Knowledge Base</h1><p>管理员登录</p><label class="form-field"><span>用户名</span><input name="username" autocomplete="username" required></label><label class="form-field"><span>密码</span><input name="password" type="password" autocomplete="current-password" required></label><p id="login-error" class="form-error" role="status"></p><button type="submit" class="button primary">登录</button></form></section>
+  <div class="app-shell" hidden>
+    <aside class="side-panel" aria-label="对话与知识库导航">
+      <div class="side-panel-head">
+        <span class="panel-brand"><span class="panel-brand-mark">K</span>Knowledge Base</span>
+        <button class="panel-collapse" data-action="collapse" aria-label="收起或展开侧栏" aria-pressed="false"><svg><use href="#i-panel"/></svg></button>
+      </div>
+      <div class="primary-actions">
+        <button class="primary-action" data-action="new-chat"><svg><use href="#i-chat"/></svg><span>新对话</span></button>
+        <button class="primary-action" data-action="open-knowledge"><svg><use href="#i-book"/></svg><span>知识库</span></button>
+        <a class="primary-action" href="/toolbox"><svg><use href="#i-settings"/></svg><span>工具箱</span></a>
+      </div>
+      <div class="history" id="history-panel">
+        <div class="history-label">历史对话<span class="count" id="history-count"></span></div>
+        <div class="history-list" id="history-list"></div>
+      </div>
+      <div class="account-panel"><span id="user-status"></span><button class="button" data-action="logout">退出登录</button></div>
+    </aside>
+    <button class="panel-toggle" data-action="collapse" aria-label="展开侧栏"><svg><use href="#i-panel"/></svg></button>
+
+    <main class="workspace" id="workspace">
+      <div class="ambient-background" aria-hidden="true">
+        <svg viewBox="0 0 1000 720" preserveAspectRatio="none"><defs><linearGradient id="wave-one" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#dceeff" stop-opacity=".08"/><stop offset="1" stop-color="#b9d9ff" stop-opacity=".30"/></linearGradient><linearGradient id="wave-two" x1="0" y1="0" x2="1" y2=".5"><stop stop-color="#e5f5ff" stop-opacity=".08"/><stop offset="1" stop-color="#b4d5ff" stop-opacity=".20"/></linearGradient><linearGradient id="wave-three" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d2eaff" stop-opacity=".12"/><stop offset="1" stop-color="#aed0ff" stop-opacity=".22"/></linearGradient></defs><path fill="url(#wave-one)" d="M0 517C109 383 217 453 351 507S597 608 755 469 877 219 1000 162V720H0Z"/><path fill="url(#wave-two)" d="M0 708C192 653 274 589 459 562S751 576 853 412 927 322 1000 298V720H0Z"/><path fill="url(#wave-three)" d="M0 720C179 744 321 656 468 611S741 485 1000 435V720Z"/></svg>
+      </div>
+      <header class="window-bar">
+        <button class="notification-button" data-action="notifications" aria-label="通知"><svg><use href="#i-bell"/></svg><i></i></button>
+        <button data-action="logout" aria-label="退出登录">退出登录</button><span class="window-separator"></span>
+        <button data-action="fullscreen" aria-label="进入或退出全屏"><svg><use href="#i-maximize"/></svg></button>
+        <button data-action="new-chat" aria-label="关闭当前视图并开始新对话"><svg><use href="#i-close"/></svg></button>
+      </header>
+      <section class="home-view" id="home-view" aria-label="新对话">
+        <h1><span>Knowledge</span> Base</h1>
+        <form class="chat-composer" id="home-search-form">
+          <textarea id="home-search" name="q" rows="2" aria-label="输入问题" placeholder="输入问题或描述任务…"></textarea>
+          <div class="composer-footer">
+            <div class="chat-options"><select class="chat-mode-select" data-chat-mode aria-label="对话模式"><option value="quick_answer">快速问答</option><option value="smart_reasoning" selected>智能推理</option><option value="plain_chat">普通对话</option></select><details class="chat-scope-picker" data-chat-scope><summary>知识库</summary></details></div>
+            <span class="chat-model" data-chat-model>正在加载…</span>
+            <button class="chat-send" type="submit" aria-label="发送消息" title="发送消息"><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          </div>
+        </form>
+      </section>
+      <section class="content-view" id="content-view" hidden></section>
+    </main>
+  </div>
+
+  <dialog id="search-dialog" class="search-dialog" aria-labelledby="search-heading">
+    <h2 id="search-heading" class="sr-only">全局搜索</h2>
+    <div class="command-search"><svg><use href="#i-search"/></svg><input id="command-input" type="search" placeholder="搜索知识库或文档名称..." aria-label="全局搜索关键词" autocomplete="off"><button data-action="close-dialog" aria-label="关闭搜索"><kbd>Esc</kbd></button></div>
+    <div class="search-filters" role="group" aria-label="搜索类型"><button data-filter="all" class="active" aria-pressed="true">全部</button><button data-filter="library" aria-pressed="false">知识库</button><button data-filter="file" aria-pressed="false">文档</button></div>
+    <div class="search-results" id="search-results"></div>
+    <div class="command-footer"><span>当前已加载知识库与文档名称</span><span><kbd>↑</kbd><kbd>↓</kbd>选择 <kbd>Enter</kbd>打开</span></div>
+  </dialog>
+  <dialog id="editor-dialog" class="editor-dialog" aria-labelledby="editor-heading"></dialog>
+  <dialog id="general-dialog" class="general-dialog" aria-labelledby="general-heading"></dialog>
+  <dialog id="source-dialog" class="source-dialog" aria-labelledby="source-name"><button class="button" data-action="close-dialog">关闭</button><h2 id="source-name"></h2><p id="source-meta" class="source-meta"></p><pre id="source-text"></pre><a id="source-download">下载原文件</a></dialog>
+  <div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>
