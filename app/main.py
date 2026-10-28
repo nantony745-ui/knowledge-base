@@ -2,6 +2,7 @@ import asyncio
 import json
 from collections.abc import AsyncIterator
 from contextlib import aclosing, asynccontextmanager
+from copy import copy
 from pathlib import Path
 from typing import Literal
 
@@ -28,6 +29,7 @@ from app.api.sessions import router as session_router
 from app.api.runs import router as runs_router
 from app.api.mcp_services import router as mcp_router
 from app.api.skills import router as skills_router
+from app.api.model_settings import router as model_settings_router
 from app.rag.pipeline import QuickAnswerPipeline
 from app.services.runs import RunManager
 
@@ -40,8 +42,6 @@ async def lifespan(application: FastAPI) -> AsyncIterator[None]:
     settings.require('JWT_SECRET')
     await asyncio.to_thread(initialize_admin)
     observer = Observer(settings)
-    chat = ChatAdapter(settings, observer)
-    application.state.agent = ChatAgent(chat)
     application.state.observer = observer
     application.state.retrieval = RetrievalService(settings)
     application.state.tools = create_knowledge_registry(settings, application.state.retrieval, observer)
@@ -49,15 +49,22 @@ async def lifespan(application: FastAPI) -> AsyncIterator[None]:
     application.state.skills = reasoning.skills
     application.state.runs = RunManager(settings, QuickAnswerPipeline(settings,application.state.retrieval),observer,
         reasoning)
+    def run_runtime():
+        current = load_settings()
+        observation = Observer(current)
+        retrieval = copy(application.state.retrieval)
+        retrieval.settings = current
+        engine = copy(reasoning)
+        engine.settings = current
+        engine.registry = create_knowledge_registry(current, retrieval, observation)
+        return current, QuickAnswerPipeline(current, retrieval), engine, observation
+    application.state.runs.runtime_factory = run_runtime
     try:
         yield
     finally:
         await application.state.runs.shutdown()
-        try:
-            await chat.close()
-        finally:
-            # Langfuse资源按项目共享，应用lifespan可重复进入；进程退出由SDK关闭。
-            await asyncio.to_thread(observer.client.flush)
+        # Langfuse资源按项目共享，应用lifespan可重复进入；进程退出由SDK关闭。
+        await asyncio.to_thread(observer.client.flush)
 
 
 app = FastAPI(title="知识库", lifespan=lifespan)
@@ -71,13 +78,14 @@ app.include_router(chunks_router)
 app.include_router(runs_router)
 app.include_router(mcp_router)
 app.include_router(skills_router)
+app.include_router(model_settings_router)
 
 
 @app.exception_handler(RequestValidationError)
 async def request_validation_error(request: Request, error: RequestValidationError):
-    if request.url.path.startswith('/api/mcp-services'):
+    if request.url.path.startswith(('/api/mcp-services', '/api/settings/models')):
         return JSONResponse(status_code=422, content={'detail': [
-            {'loc': item['loc'], 'type': item['type'], 'msg': 'MCP配置字段无效'} for item in error.errors()]})
+            {'loc': item['loc'], 'type': item['type'], 'msg': '配置字段无效'} for item in error.errors()]})
     return await request_validation_exception_handler(request, error)
 
 
@@ -112,9 +120,14 @@ async def skills_page():
     return FileResponse(FRONTEND_DIR / 'skills.html')
 
 
+@app.get('/settings', response_class=FileResponse, include_in_schema=False)
+async def settings_page():
+    return FileResponse(FRONTEND_DIR / 'settings.html')
+
+
 @app.get("/api/chat/model", dependencies=[Depends(current_user)])
-async def chat_model(request: Request) -> dict[str, str]:
-    return {"model": request.app.state.agent.chat.model}
+async def chat_model() -> dict[str, str]:
+    return {"model": load_settings().CHAT_MODEL}
 
 
 class ChatMessage(BaseModel):
@@ -137,11 +150,21 @@ async def stream_reply(agent: ChatAgent, messages: list[dict[str, str]]) -> Asyn
         yield json.dumps({"type": "error", "message": exc.info.message}, ensure_ascii=False) + "\n"
 
 
+async def configured_reply(settings, messages):
+    adapter = ChatAdapter(settings, Observer(settings))
+    try:
+        async with aclosing(stream_reply(ChatAgent(adapter), messages)) as events:
+            async for event in events:
+                yield event
+    finally:
+        await adapter.close()
+
+
 @app.post("/api/chat", response_class=StreamingResponse, dependencies=[Depends(current_user), Depends(require_origin)])
-async def chat(body: ChatRequest, request: Request) -> StreamingResponse:
+async def chat(body: ChatRequest) -> StreamingResponse:
     messages = [message.model_dump() for message in body.messages]
     return StreamingResponse(
-        stream_reply(request.app.state.agent, messages),
+        configured_reply(await asyncio.to_thread(load_settings), messages),
         media_type="application/x-ndjson",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )

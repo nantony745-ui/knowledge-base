@@ -28,6 +28,8 @@ bash scripts/gen-secrets.sh
 
 不同服务可使用不同供应商。首次使用先确认模型和服务可用；更换向量模型或维度时使用新的索引集合。仅文本入库不需要配置 MinerU。
 
+首次启动仍需填写上述环境配置。登录后可通过侧栏「设置」修改 Chat、Embedding、Reranker 的模型名、URL 和 API Key，并分别保存或检测。密钥留空保留原值；保存后的 `.env.models` 覆盖对应环境配置，重启后仍有效，该文件已被 Git 忽略。新请求和新入库任务读取新值，正在运行的任务保留原配置，详见[模型设置](model-settings.md)。
+
 ### 3. 启动
 
 ```bash
@@ -78,7 +80,8 @@ Langfuse 管理员信息位于本地 `.env.langfuse`，使用 `LANGFUSE_INIT_USE
 # 前端语法与交互测试，需要 Node.js 22 或更新版本
 node --check frontend/app.js
 node --check frontend/quick-answer.js
-node --test tests/test_frontend_chat.cjs tests/test_toolbox_frontend.cjs tests/test_mcp_frontend.cjs
+node --check frontend/settings.js
+node --test tests/test_frontend_chat.cjs tests/test_toolbox_frontend.cjs tests/test_mcp_frontend.cjs tests/test_model_settings_browser.cjs
 ```
 
 手动验收顺序：登录 → 新建知识库 → 上传示例文档 → 等待就绪 → 检索 → 快速问答 → 打开来源 → 智能推理 → 刷新恢复会话。

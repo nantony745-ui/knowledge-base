@@ -26,6 +26,7 @@
 | 会话与来源 | 恢复历史会话，从回答中的来源卡片打开原文片段 |
 | Skills | 查看技能目录、启停技能、刷新目录，按需加载技能正文与文本资源 |
 | 工具扩展 | 配置 MCP 服务、发现工具并管理工具白名单 |
+| 模型设置 | 修改 Chat、Embedding、Reranker 的模型、URL 与密钥，保存配置并检测连接 |
 
 ## 操作演示
 
@@ -88,7 +89,7 @@ P1 故障的首次响应、进展同步和升级通知要求是什么？
 
 ## Skills管理与加载
 
-Skills 将任务方法写成可加载的技能说明与参考资料。点击左侧「工具箱」进入「技能管理」，查看技能名称、说明、启用状态和资源数量。
+Skills 将任务方法写成可加载的技能说明与参考资料。点击左侧「Skills 与 MCP」进入「技能管理」，查看技能名称、说明、启用状态和资源数量。
 
 ![技能管理：查看已登记技能及启用状态](docs/images/skills-catalog.png)
 
@@ -158,6 +159,8 @@ bash scripts/gen-secrets.sh
 
 向量维度应与服务实际输出一致。完整配置模板见 [.env.example](.env.example)，本地环境文件已被 Git 忽略。
 
+启动并登录后，可从侧栏「设置」修改三类模型的名称、URL 和密钥，独立保存或检测连接。默认使用当前环境配置，密钥留空保留原值；保存后对新请求和新入库任务生效。配置保存在已被 Git 忽略的 `.env.models`，详见[模型设置](docs/model-settings.md)。
+
 ### 2. 启动服务
 
 ```bash
@@ -186,10 +189,13 @@ bash scripts/start_kb.sh
 # 前端语法与交互测试，Node.js 22+
 node --check frontend/app.js
 node --check frontend/quick-answer.js
-node --test tests/test_frontend_chat.cjs tests/test_toolbox_frontend.cjs tests/test_mcp_frontend.cjs
+node --check frontend/settings.js
+node --test tests/test_frontend_chat.cjs tests/test_toolbox_frontend.cjs tests/test_mcp_frontend.cjs tests/test_model_settings_browser.cjs
 ```
 
 发布验证结果与本机演示操作记录见[验证记录](docs/validation.md)。
+
+分支开发、本地提交、推送与 Pull Request 流程见[Git 提交流程](docs/git-workflow.md)。
 
 | 目录 | 内容 |
 | --- | --- |

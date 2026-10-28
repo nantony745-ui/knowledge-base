@@ -1,4 +1,5 @@
 import asyncio
+from copy import copy
 
 from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, Field
@@ -43,8 +44,11 @@ async def debug_search(body: DebugInput, request: Request, owner: str = Depends(
     from app.rag.retrieval import RetrievalService
     if not hasattr(request.app.state, 'retrieval'):
         request.app.state.retrieval = RetrievalService(load_settings())
-    observer = getattr(request.app.state, 'observer', None) or Observer(load_settings())
-    result = await request.app.state.retrieval.search_knowledge(body.query, body.kb_ids, owner, observer)
+    settings = await asyncio.to_thread(load_settings)
+    retrieval = copy(request.app.state.retrieval)
+    retrieval.settings = settings
+    observer = Observer(settings)
+    result = await retrieval.search_knowledge(body.query, body.kb_ids, owner, observer)
     return {
         'bm25': [{k: h[k] for k in ('chunk_id', 'rank', 'score')} for h in result['bm25']],
         'vector': [{k: h[k] for k in ('chunk_id', 'rank', 'score')} for h in result['vector']],
