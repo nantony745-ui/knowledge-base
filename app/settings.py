@@ -4,6 +4,7 @@ from urllib.parse import urlsplit, urlunsplit
 
 import httpx
 import httpx2
+from dotenv import dotenv_values
 from pydantic import AliasChoices, Field, SecretStr, ValidationError, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -13,6 +14,12 @@ ROOT = Path(__file__).resolve().parents[1]
 class Settings(BaseSettings):
     MCP_AUTH_ENV_KEYS: ClassVar[frozenset[str]] = frozenset({'MCP_DEMO_BEARER_TOKEN', 'MCP_TAVILY_API_KEY'})
     MCP_CREDENTIALS_FILE: ClassVar[Path] = ROOT / '.env.mcp'
+    MODEL_SETTINGS_FILE: ClassVar[Path] = ROOT / '.env.models'
+    MODEL_FIELDS: ClassVar[frozenset[str]] = frozenset({
+        'CHAT_BASE_URL', 'CHAT_API_KEY', 'CHAT_MODEL',
+        'EMBED_BASE_URL', 'EMBED_API_KEY', 'EMBED_MODEL',
+        'RERANK_URL', 'RERANK_API_KEY', 'RERANK_MODEL',
+    })
     model_config = SettingsConfigDict(
         env_file=ROOT / ".env", extra="ignore", hide_input_in_errors=True,
         populate_by_name=True,
@@ -144,7 +151,8 @@ class Settings(BaseSettings):
 
 def load_settings() -> Settings:
     try:
-        return Settings()
+        overrides = dotenv_values(Settings.MODEL_SETTINGS_FILE, interpolate=False)
+        return Settings(**{key: value for key, value in overrides.items() if key in Settings.MODEL_FIELDS})
     except ValidationError as exc:
         from app.adapters.common import AdapterError
         fields = sorted({str(error["loc"][0]) for error in exc.errors(include_input=False)})

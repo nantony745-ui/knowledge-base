@@ -70,6 +70,7 @@ class Run:
     enabled_skills: frozenset[str] | None = None
     skill_catalog: object | None = None
     tracer: object | None = None
+    runtime: tuple | None = field(default=None, repr=False)
 
     async def emit(self, kind, payload):
         if kind in ('round.started', 'assistant.tool_calls'):
@@ -96,6 +97,7 @@ class RunManager:
         self.deleting: set[str] = set()
         self.pending: set[asyncio.Task] = set()
         self.closing = False
+        self.runtime_factory = None
 
     def gate(self, session_id):
         return self.gates.setdefault(session_id,asyncio.Lock())
@@ -141,9 +143,12 @@ class RunManager:
             await atomic_thread(repair_tool_results,session_id,owner,None,'interrupted')
             history = await atomic_thread(load_history,session_id,owner)
             run = Run(str(uuid4()),session_id,owner,mode=mode)
-            run.config_snapshot = freeze_config(self.settings, kb_ids)
-            if mode == 'smart_reasoning' and self.reasoning_engine is not None:
-                self.reasoning_engine.freeze_skills(run)
+            run.runtime = (await asyncio.to_thread(self.runtime_factory) if self.runtime_factory else
+                           (self.settings, self.pipeline, self.reasoning_engine, self.observer))
+            settings, _, reasoning, _ = run.runtime
+            run.config_snapshot = freeze_config(settings, kb_ids)
+            if mode == 'smart_reasoning' and reasoning is not None:
+                reasoning.freeze_skills(run)
             await atomic_thread(register_run, session_id, owner, run.id)
             def committed(user):
                 run.turn_id = user['id']
@@ -192,8 +197,10 @@ class RunManager:
 
     async def invoke_pipeline(self, run, query, kb_ids, history):
         from app.agent.context import ContextController, freeze_config
+        settings, pipeline, reasoning, observer = run.runtime or (
+            self.settings, self.pipeline, self.reasoning_engine, self.observer)
         if run.config_snapshot is None:
-            run.config_snapshot = freeze_config(self.settings, kb_ids)
+            run.config_snapshot = freeze_config(settings, kb_ids)
         if run.context is None:
             from app.agent.sources import RunSources
             run.sources = RunSources(run.id, run.owner, run.config_snapshot.kb_ids, run.refs)
@@ -204,7 +211,7 @@ class RunManager:
                                             run.refs if run.mode == 'smart_reasoning' else None)
             run.context.current_range = {'turn_id': run.turn_id, 'start_seq': run.user_seq, 'end_seq': run.user_seq}
         kb_ids = list(run.config_snapshot.kb_ids)
-        tracer = RunTracer(self.settings,self.observer)
+        tracer = RunTracer(settings,observer)
         tracer.context = run.context
         tracer.sources = run.sources
         run.tracer = run.context.tracer = tracer
@@ -217,9 +224,9 @@ class RunManager:
                 tracer.started = time.monotonic()
                 try:
                     if run.mode == 'smart_reasoning':
-                        result = await self.reasoning_engine.run(query,kb_ids,run,history,PipelineObserver(tracer))
+                        result = await reasoning.run(query,kb_ids,run,history,PipelineObserver(tracer))
                     else:
-                        result = await self.pipeline.run(query,kb_ids,run.owner,history,run.emit,PipelineObserver(tracer),tracer)
+                        result = await pipeline.run(query,kb_ids,run.owner,history,run.emit,PipelineObserver(tracer),tracer)
                         tracer.stop_reason = 'no_tool_calls'
                     span.update(output={'text': result.text, 'citations': result.citations})
                     return result

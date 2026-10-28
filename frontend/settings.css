@@ -1,0 +1,13 @@
+.settings-page{max-width:1000px}
+.model-card{border:1px solid var(--border);border-radius:12px;background:#fff;padding:24px;margin:18px 0}
+.model-card h2{font-size:18px;margin:0 0 8px;color:#23344c}
+.model-card .model-description{font-size:13px;color:#7b8799;line-height:1.8;margin:0 0 18px}
+.model-fields{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.model-card label{display:flex;flex-direction:column;gap:8px;font-size:13px;color:#526477}
+.model-card .model-url{grid-column:1/-1}
+.model-card input{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:7px;font:inherit;color:#23344c;background:#fff}
+.model-card input:focus{outline:2px solid #d6eaff;border-color:var(--blue)}
+.model-actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.model-card [role=status]{font-size:13px;line-height:1.8;min-height:24px;margin:14px 0 0;overflow-wrap:anywhere}
+.model-card [data-state=success]{color:#1b8055}.model-card [data-state=error]{color:#c13b3b}
+@media(max-width:600px){.model-card{padding:18px}.model-fields{grid-template-columns:1fr}}
